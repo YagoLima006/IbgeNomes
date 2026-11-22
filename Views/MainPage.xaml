@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IbgeNomes.ViewModels"
+             xmlns:models="clr-namespace:IbgeNomes.Models"
+             x:Class="IbgeNomes.Views.MainPage"
+             x:DataType="vm:MainViewModel"
+             Title="IBGE Data Insights"
+             BackgroundColor="#F4F6F8">
+
+    <ContentPage.Resources>
+        <!-- Estilo dos botões de aba (Homens / Mulheres / Sobrenomes) -->
+        <Style x:Key="AbaBotao" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="White" />
+            <Setter Property="TextColor" Value="#1B4F72" />
+            <Setter Property="BorderColor" Value="#1B4F72" />
+            <Setter Property="BorderWidth" Value="1" />
+            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="6,0" />
+            <Setter Property="HeightRequest" Value="40" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" Padding="16" RowSpacing="10">
+
+        <!-- 0. Cabeçalho -->
+        <VerticalStackLayout Grid.Row="0" Spacing="2">
+            <Label Text="Nomes mais comuns por localidade"
+                   FontSize="22" FontAttributes="Bold" TextColor="#1B4F72" />
+            <Label Text="Fonte: IBGE – API de Localidades + API de Nomes (Censo 2022)"
+                   FontSize="12" TextColor="#5D6D7E" />
+        </VerticalStackLayout>
+
+        <!-- 1. Picker de estados (populado pela API de Localidades) -->
+        <Border Grid.Row="1" BackgroundColor="White" Stroke="#D5DBDB" Padding="10,0"
+                StrokeShape="RoundRectangle 10">
+            <Picker Title="Selecione o estado"
+                    ItemsSource="{Binding Estados}"
+                    ItemDisplayBinding="{Binding NomeExibicao, x:DataType=models:Estado}"
+                    SelectedItem="{Binding EstadoSelecionado}" />
+        </Border>
+
+        <!-- 2. Picker de municípios (aparece depois de escolher o estado) -->
+        <Border Grid.Row="2" BackgroundColor="White" Stroke="#D5DBDB" Padding="10,0"
+                StrokeShape="RoundRectangle 10"
+                IsVisible="{Binding TemMunicipios}">
+            <Picker Title="Selecione o município (opcional)"
+                    ItemsSource="{Binding Municipios}"
+                    ItemDisplayBinding="{Binding Nome, x:DataType=models:Municipio}"
+                    SelectedItem="{Binding MunicipioSelecionado}" />
+        </Border>
+
+        <!-- 3. Título + abas -->
+        <VerticalStackLayout Grid.Row="3" Spacing="8">
+            <Label Text="{Binding Titulo}" FontSize="16" FontAttributes="Bold" TextColor="#212F3D" />
+
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                <Button Grid.Column="0" Text="👨 Homens" Style="{StaticResource AbaBotao}"
+                        Command="{Binding MostrarHomensCommand}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding HomensAtivo}" Value="True">
+                            <Setter Property="BackgroundColor" Value="#1B4F72" />
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+
+                <Button Grid.Column="1" Text="👩 Mulheres" Style="{StaticResource AbaBotao}"
+                        Command="{Binding MostrarMulheresCommand}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding MulheresAtivo}" Value="True">
+                            <Setter Property="BackgroundColor" Value="#1B4F72" />
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+
+                <Button Grid.Column="2" Text="🏷️ Sobrenomes" Style="{StaticResource AbaBotao}"
+                        Command="{Binding MostrarSobrenomesCommand}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding SobrenomesAtivo}" Value="True">
+                            <Setter Property="BackgroundColor" Value="#1B4F72" />
+                            <Setter Property="TextColor" Value="White" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </Grid>
+        </VerticalStackLayout>
+
+        <!-- 4. Carregando / mensagens -->
+        <VerticalStackLayout Grid.Row="4" Spacing="6">
+            <ActivityIndicator IsRunning="{Binding Carregando}" IsVisible="{Binding Carregando}"
+                               Color="#1B4F72" HeightRequest="30" />
+            <Border IsVisible="{Binding TemMensagem}" BackgroundColor="#FEF5E7" Stroke="#F5B041"
+                    Padding="10" StrokeShape="RoundRectangle 8">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="{Binding Mensagem}" TextColor="#7E5109" FontSize="13" />
+                    <Button Text="Recarregar" Command="{Binding RecarregarCommand}"
+                            HorizontalOptions="Start" HeightRequest="34" Padding="12,0"
+                            BackgroundColor="#F5B041" TextColor="White" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+
+        <!-- 5. Lista dinâmica de nomes -->
+        <CollectionView Grid.Row="5" ItemsSource="{Binding ListaAtual}" SelectionMode="None">
+            <CollectionView.EmptyView>
+                <Label Text="Escolha um estado ou município para ver os nomes."
+                       HorizontalTextAlignment="Center" TextColor="#808B96" Margin="0,30" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:NomeFrequencia">
+                    <Border Margin="0,4" Padding="12" BackgroundColor="White" Stroke="#E5E8E8"
+                            StrokeShape="RoundRectangle 10">
+                        <Grid ColumnDefinitions="44,*" ColumnSpacing="12">
+                            <Border Grid.Column="0" WidthRequest="40" HeightRequest="40"
+                                    BackgroundColor="#EBF5FB" StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 20">
+                                <Label Text="{Binding RankingFormatado}" FontAttributes="Bold"
+                                       TextColor="#1B4F72"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="{Binding NomeFormatado}" FontSize="17"
+                                       FontAttributes="Bold" TextColor="#212F3D" />
+                                <Label Text="{Binding FrequenciaFormatada}" FontSize="13"
+                                       TextColor="#5D6D7E" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
