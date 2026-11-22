@@ -11,7 +11,7 @@ Aplicativo **.NET MAUI (C#)** que consome **duas APIs públicas do IBGE em cadei
 | Nome | GitHub |
 |---|---|
 | Yago Cesar | [@YagoLima006](https://github.com/YagoLima006) |
-| Luis Antonio Gamboggi | |
+| Luis Antonio Gambogi | [@NetoGambogi](https://github.com/NetoGambogi) |
 
 ## 🔗 APIs utilizadas
 
@@ -127,4 +127,4 @@ use os botões **Homens / Mulheres / Sobrenomes** para alternar as listas.
 
 ## 🎥 Vídeo de demonstração
 
-Link: _cole aqui o link do YouTube ou Google Drive_
+Link: <https://youtube.com/shorts/STer6DVDzuc>
