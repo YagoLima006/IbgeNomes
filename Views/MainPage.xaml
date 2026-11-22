@@ -36,6 +36,7 @@
         <Border Grid.Row="1" BackgroundColor="White" Stroke="#D5DBDB" Padding="10,0"
                 StrokeShape="RoundRectangle 10">
             <Picker Title="Selecione o estado"
+                    TextColor="#212F3D" TitleColor="#808B96"
                     ItemsSource="{Binding Estados}"
                     ItemDisplayBinding="{Binding NomeExibicao, x:DataType=models:Estado}"
                     SelectedItem="{Binding EstadoSelecionado}" />
@@ -46,6 +47,7 @@
                 StrokeShape="RoundRectangle 10"
                 IsVisible="{Binding TemMunicipios}">
             <Picker Title="Selecione o município (opcional)"
+                    TextColor="#212F3D" TitleColor="#808B96"
                     ItemsSource="{Binding Municipios}"
                     ItemDisplayBinding="{Binding Nome, x:DataType=models:Municipio}"
                     SelectedItem="{Binding MunicipioSelecionado}" />
