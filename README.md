@@ -8,11 +8,10 @@ Aplicativo **.NET MAUI (C#)** que consome **duas APIs públicas do IBGE em cadei
 
 ## 👥 Integrantes
 
-| Nome completo | RA / Matrícula |
+| Nome | GitHub |
 |---|---|
-| Yago Cesar ________________ | ________ |
-| ___________________________ | ________ |
-| ___________________________ | ________ |
+| Yago Cesar | [@YagoLima006](https://github.com/YagoLima006) |
+| Luis Antonio Gamboggi | |
 
 ## 🔗 APIs utilizadas
 
@@ -86,7 +85,7 @@ com as interfaces de serviço.
 
 ### 1. Clonar
 ```powershell
-git clone https://github.com/SEU_USUARIO/IbgeNomes.git
+git clone https://github.com/YagoLima006/IbgeNomes.git
 cd IbgeNomes
 ```
 
