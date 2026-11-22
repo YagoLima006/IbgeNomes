@@ -51,10 +51,6 @@ IbgeNomes/
 │   ├── ILocalidadesService.cs / LocalidadesService.cs
 │   ├── INomesService.cs / NomesService.cs
 │   └── IbgeApiException.cs
-│   ├── IbgeApi.cs              (URLs centralizadas)
-│   ├── ILocalidadesService.cs / LocalidadesService.cs
-│   ├── INomesService.cs / NomesService.cs
-│   └── IbgeApiException.cs
 ├── ViewModels/             ← Apresentação (estado da tela, MVVM)
 │   ├── BaseViewModel.cs
 │   └── MainViewModel.cs
@@ -76,27 +72,59 @@ com as interfaces de serviço.
 ## ▶️ Como executar
 
 ### Pré-requisitos
-- **Visual Studio 2022 (17.12+) ou mais recente**, com a carga de trabalho
-  **“Desenvolvimento de interface do usuário de aplicativo multiplataforma do .NET” (.NET MAUI)**.
-- Emulador Android configurado (Android Device Manager) **ou** celular Android com
-  depuração USB ativada. (Também roda como app Windows.)
+- **.NET 10 SDK** com as cargas de trabalho do MAUI para Windows e Android:
+  ```powershell
+  dotnet workload install maui-windows maui-android
+  ```
+- **Android SDK + Java (JDK)** — podem ser instalados pelo próprio projeto (veja abaixo)
+  ou pelo Visual Studio 2022/2026 com a carga de trabalho **.NET MAUI**.
+- Emulador Android (requer virtualização ativada na BIOS) **ou** celular Android com
+  depuração USB ativada. Também roda como app Windows.
 - Internet (o app consome as APIs em tempo real).
 
-### Passos
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/SEU_USUARIO/IbgeNomes.git
-   ```
-2. Abra `IbgeNomes.sln` no Visual Studio.
-3. Na barra superior, escolha o destino **Android Emulator** (ou *Windows Machine*).
-4. Pressione **F5**.
-5. No app: escolha um **estado** → veja os nomes; escolha um **município** para filtrar;
-   use os botões **Homens / Mulheres / Sobrenomes** para alternar as listas.
+> Alvos do projeto: `net10.0-android` e `net10.0-windows10.0.19041.0`.
 
-Pela linha de comando (opcional):
-```bash
-dotnet build -t:Run -f net9.0-android    # troque net9.0 pela versão do seu projeto
+### 1. Clonar
+```powershell
+git clone https://github.com/SEU_USUARIO/IbgeNomes.git
+cd IbgeNomes
 ```
+
+### 2. Rodar no Windows
+```powershell
+dotnet build -f net10.0-windows10.0.19041.0
+.\bin\Debug\net10.0-windows10.0.19041.0\win-x64\IbgeNomes.exe
+```
+> Se o caminho da pasta **não** tiver espaços, também funciona:
+> `dotnet build -t:Run -f net10.0-windows10.0.19041.0`
+
+### 3. Rodar no Android (emulador)
+Instalar o Android SDK e o JDK (só na primeira vez):
+```powershell
+dotnet build -t:InstallAndroidDependencies -f net10.0-android "-p:AndroidSdkDirectory=C:\Android\Sdk" "-p:JavaSdkDirectory=C:\Android\jdk" "-p:AcceptAndroidSDKLicenses=True"
+```
+
+Criar o emulador Pixel com API 34 (só na primeira vez):
+```powershell
+$env:JAVA_HOME = "C:\Android\jdk"
+C:\Android\Sdk\cmdline-tools\latest\bin\sdkmanager.bat --sdk_root=C:\Android\Sdk "emulator" "platforms;android-34" "system-images;android-34;google_apis;x86_64"
+C:\Android\Sdk\cmdline-tools\latest\bin\avdmanager.bat create avd -n Pixel_API_34 -k "system-images;android-34;google_apis;x86_64" -d pixel
+```
+
+Ligar o emulador, conferir se aparece como `device` e rodar o app:
+```powershell
+Start-Process C:\Android\Sdk\emulator\emulator.exe -ArgumentList "-avd","Pixel_API_34"
+C:\Android\Sdk\platform-tools\adb.exe devices
+dotnet build -t:Run -f net10.0-android "-p:AndroidSdkDirectory=C:\Android\Sdk" "-p:JavaSdkDirectory=C:\Android\jdk"
+```
+
+### Pelo Visual Studio (alternativa)
+Abra `IbgeNomes.csproj`, escolha o destino **Android Emulator** (ou *Windows Machine*)
+e pressione **F5**.
+
+### Usando o app
+Escolha um **estado** → veja os nomes; escolha um **município** para filtrar;
+use os botões **Homens / Mulheres / Sobrenomes** para alternar as listas.
 
 ## 🎥 Vídeo de demonstração
 
